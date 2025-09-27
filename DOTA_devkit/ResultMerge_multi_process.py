@@ -176,14 +176,24 @@ def mergesingle(dstpath, nms, nms_thresh, fullname):
             oriname = splitname[0]
             pattern1 = re.compile(r'__\d+___\d+')
             #print('subname:', subname)
+            # Support unsplit datasets (e.g., HRSC) where filenames lack tile metadata.
             x_y = re.findall(pattern1, subname)
-            x_y_2 = re.findall(r'\d+', x_y[0])
+            # x_y = re.findall(pattern1, subname)
+            # x_y_2 = re.findall(r'\d+', x_y[0])
             x, y = int(x_y_2[0]), int(x_y_2[1])
-
+            if x_y:
+                x_y_2 = re.findall(r'\d+', x_y[0])
+                x, y = int(x_y_2[0]), int(x_y_2[1])
+            else:
+                x, y = 0, 0         
             pattern2 = re.compile(r'__([\d+\.]+)__\d+___')
 
-            rate = re.findall(pattern2, subname)[0]
-
+            # rate = re.findall(pattern2, subname)[0]
+            rate_match = re.findall(pattern2, subname)
+            if rate_match:
+                rate = rate_match[0]
+            else:
+                rate = 1.0            
             confidence = splitline[1]
             poly = list(map(float, splitline[2:]))
             origpoly = poly2origpoly(poly, x, y, rate)
