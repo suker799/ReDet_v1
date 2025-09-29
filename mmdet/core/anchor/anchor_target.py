@@ -165,6 +165,8 @@ def anchor_target_single(flat_anchors,
 
 def anchor_inside_flags(flat_anchors, valid_flags, img_shape,
                         allowed_border=0):
+    if valid_flags.dtype != torch.bool:
+        valid_flags = valid_flags.to(torch.bool)                           
     img_h, img_w = img_shape[:2]
     if allowed_border >= 0:
         inside_flags = valid_flags & \
